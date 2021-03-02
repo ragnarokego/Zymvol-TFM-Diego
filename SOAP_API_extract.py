@@ -23,7 +23,7 @@ def commonECnums():
 	ECNums_raw=infofile.readline() #Todos los EC numbers de BRENDA estarán en la primera línea
 	ECNums_str=ECNums_raw[1:(len(ECNums_raw)-1)]
 	ECNums_list = ECNums_str.split(",")
-	print(len(ECNums_list)) #-> Esto es una ayuda para saber cuál es el número máximo
+	print("The total number of EC numbers in BRENDA is:", len(ECNums_list)) #-> Esto es una ayuda para saber cuál es el número máximo
 	
 	#Vemos que EC numbers contienen algo de información en las propiedades indicadas:
 	while True: 	
@@ -35,7 +35,7 @@ def commonECnums():
 		 	for numero in ECNums_list:
 		 		if numero not in list_numbers:
 		 			ECNums_list.remove(numero)
-	print(len(ECNums_list)) # Este es el número de EC numbers obtenidos que presentan algo de información en todas las propiedades de interés.
+	print("The number of EC numbers that contains a information of all the desired parameters is:", len(ECNums_list)) # Este es el número de EC numbers obtenidos que presentan algo de información en todas las propiedades de interés.
 	
 	#Escribimos los EC numbers filtrados en un documento a parte que estará accesible a nosotros.
 	for entrada in ECNums_list:
@@ -56,18 +56,11 @@ def allcommonECnums(parameters,client):
 	commonECnumbers.write("\n")
 	
 	#A partir de aquí están los ECNumbers del resto de campos:
-	#Aplicación
-	ApplicNums = client.service.getEcNumbersFromApplication(*parameters) 
-	commonECnumbers.write(str(ApplicNums))
-	commonECnumbers.write("\n")
 	#Nombre de las enzimas
 	EnzynamesNums= client.service.getEcNumbersFromEnzymeNames(*parameters)
 	commonECnumbers.write(str(EnzynamesNums))
 	commonECnumbers.write("\n")
-	#Valores de expresión
-	ExpresNums = client.service.getEcNumbersFromExpression(*parameters)
-	commonECnumbers.write(str(ExpresNums))
-	commonECnumbers.write("\n")
+	
 	#Información general
 	GeneralinfoNums = client.service.getEcNumbersFromGeneralInformation(*parameters)
 	commonECnumbers.write(str(GeneralinfoNums))
@@ -76,18 +69,7 @@ def allcommonECnums(parameters,client):
 	GeneralstabNums = client.service.getEcNumbersFromGeneralStability(*parameters)
 	commonECnumbers.write(str(GeneralstabNums))
 	commonECnumbers.write("\n")
-	#Valor IC50
-	IC50Nums = client.service.getEcNumbersFromIc50Value(*parameters)
-	commonECnumbers.write(str(IC50Nums))
-	commonECnumbers.write("\n")
-	# Inhibidores
-	InhibNums = client.service.getEcNumbersFromInhibitors(*parameters)
-	commonECnumbers.write(str(InhibNums))
-	commonECnumbers.write("\n")
-	# Constante cinética de inhibición
-	KINums = client.service.getEcNumbersFromKiValue(*parameters)
-	commonECnumbers.write(str(KINums))
-	commonECnumbers.write("\n")
+	
 	# Constante cinética de Michaelis Menten
 	KMNums = client.service.getEcNumbersFromKmValue(*parameters)
 	commonECnumbers.write(str(KMNums))
