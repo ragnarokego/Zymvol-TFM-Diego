@@ -10,26 +10,34 @@ password = hashlib.sha256("Zymvol21".encode("utf-8")).hexdigest() #La contraseñ
 
 client = Client(wsdl)
 
+# Los parámetros para poder obtener los EC numbers registrados es nuestro mail y password, el cual se lo tenemos que dar siempre. 
 parameters = (email,password)
 
 def commonECnums(): 
 	#Esta función pretende aplicarse a todas las listas, para finalmente tener una única lista con todos los EC numbers que tienen información para todos los parámetros que queremos:
+	#Primero, abrimos dos documento: El que contiene las listas con todos los EC numbers y los EC numbers registrados en cada propiedad, y el documento que vamos a crear que contenga todos los EC numbers de nuestro interés
 	infofile=open("All_EC_Numbers.txt", "rt")
 	outputfile=open("Common_EC_Numbers.txt","wt")
-	ECNums_raw=infofile.readline()
+	
+	#Leemos la lista en formato string, y lo pasamos a formato lista
+	ECNums_raw=infofile.readline() #Todos los EC numbers de BRENDA estarán en la primera línea
 	ECNums_str=ECNums_raw[1:(len(ECNums_raw)-1)]
 	ECNums_list = ECNums_str.split(",")
-	print(len(ECNums_list))
+	print(len(ECNums_list)) #-> Esto es una ayuda para saber cuál es el número máximo
+	
+	#Vemos que EC numbers contienen algo de información en las propiedades indicadas:
 	while True: 	
 		 	numbers_raw=infofile.readline()
-		 	if not numbers_raw: break
+		 	if not numbers_raw: break #Si no hay texto
 		 	numbers_str=numbers_raw[1:(len(numbers_raw)-1)]
-		 	list_numbers=numbers_str.split(",")
+		 	list_numbers=numbers_str.split(",") #Leemos el string como una lista
+		 	#Filtramos los EC numbers
 		 	for numero in ECNums_list:
 		 		if numero not in list_numbers:
 		 			ECNums_list.remove(numero)
-	print(len(ECNums_list))
+	print(len(ECNums_list)) # Este es el número de EC numbers obtenidos que presentan algo de información en todas las propiedades de interés.
 	
+	#Escribimos los EC numbers filtrados en un documento a parte que estará accesible a nosotros.
 	for entrada in ECNums_list:
 		outputfile.write(entrada)
 		outputfile.write("\n")
@@ -47,7 +55,7 @@ def allcommonECnums(parameters,client):
 	commonECnumbers.write(str(ECNums))
 	commonECnumbers.write("\n")
 	
-	#A partir de aquí están los ECNumbers del resto de parámetros:
+	#A partir de aquí están los ECNumbers del resto de campos:
 	#Aplicación
 	ApplicNums = client.service.getEcNumbersFromApplication(*parameters) 
 	commonECnumbers.write(str(ApplicNums))
@@ -136,7 +144,7 @@ def allcommonECnums(parameters,client):
 	SeqNums = client.service.getEcNumbersFromSequence(*parameters)
 	commonECnumbers.write(str(SeqNums))
 	commonECnumbers.write("\n")
-	#Specific activity
+	#Actividad específica
 	SpecActNums = client.service.getEcNumbersFromSpecificActivity(*parameters)
 	commonECnumbers.write(str(SpecActNums))
 	commonECnumbers.write("\n")
@@ -160,7 +168,7 @@ def allcommonECnums(parameters,client):
 	#cerramos el fichero con las listas
 	commonECnumbers.close()
 
-#Ahora, vamos a escribir un archivo de texto que tenga esos números:
+#Ahora, ejecutamos las funciones
 allcommonECnums(parameters,client)
 commonECnums()
 
